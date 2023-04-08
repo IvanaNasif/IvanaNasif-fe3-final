@@ -39,12 +39,23 @@ const themes ={
     }
   }
 
+const initialApiState =[]
+
+const apiReducer =(state,action) =>{
+  switch(action.type){
+    case 'GET_DENTISTS':
+      return action.payload
+  }
+}
+
 
 export const ContextProvider = ({ children }) => {
 
 const[themeState,themeDispatch] = useReducer (themeReducer, initialThemeState)
 const[favStates, favDispatch] = useReducer(favReducer, inicalFavState)
-const [dentists, setDentists] = useState([])
+const[apiState,apiDispatch] = useReducer (apiReducer, initialApiState)
+//const [dentists, setDentists] = useState([])
+console.log(apiState);
 const url = 'https://jsonplaceholder.typicode.com/users'
 
 
@@ -57,12 +68,12 @@ useEffect(()=>{
       const fetchData = async() => {
         let response = await fetch (url)
         let data = await response.json()
-        setDentists(data)
+        apiDispatch({type:'GET_DENTISTS', payload:data})
       }
       fetchData()
   },[])
   return (
-    <ContextGlobal.Provider value={{dentists, setDentists,themeState,themeDispatch,favStates,favDispatch}}>
+    <ContextGlobal.Provider value={{apiState,themeState,themeDispatch,favStates,favDispatch}}>
       {children}
     </ContextGlobal.Provider>
   );
