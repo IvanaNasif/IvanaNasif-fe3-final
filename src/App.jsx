@@ -7,17 +7,19 @@ import Favs from "./Routes/Favs";
 import Detail from "./Routes/Detail";
 import NotFound from "./Components/NotFound";
 import { routes } from './routes'
+import { useContextGlobal } from "./Components/utils/global.context";
 
 
 
 function App() {
-  //const handleClick =()=>{}
+
+const {themeState} = useContextGlobal()
   return (
-      <div className="App">
+      <div className={themeState.theme ? 'a': 'dark' } style={{backgroundColor:themeState.bgColor, color:themeState.color}}>
     
         <Navbar/>
         <Routes>
-          <Route path={routes.home} element ={<Home />}/>
+          <Route path={routes.home} element ={<Home/>}/>
           <Route path={routes.favs} element ={<Favs/>}/>
           <Route path={routes.detail}element={<Detail/>}/>
           <Route path={routes.contact} element={<Contact/>}/>

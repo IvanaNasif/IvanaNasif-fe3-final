@@ -1,13 +1,57 @@
-import { createContext, useContext, useState,useEffect } from "react";
-
-//export const initialState = {theme: "", data: []}
+import { createContext, useContext, useState,useEffect, useReducer } from "react";
 
 export const ContextGlobal = createContext();
 
+const themes ={
+  dark: {
+    theme:false,
+    bgColor:'black',
+    color:'white'
+},
+  light:{
+    theme:true,
+    bgColor:'white',
+    color:'black'
+  }
+}
+  const initialThemeState = themes.light
+  const inicalFavState=JSON.parse(localStorage.getItem('favs')) || []
+
+
+  const themeReducer =(state,action)=> {
+    switch (action.type){
+    case 'SWITCH_DARK':
+      return themes.dark
+    case 'SWITCH_LIGHT':
+      return themes.light
+    default:
+      throw new Error
+    }
+  }
+
+  const favReducer =(state,action) =>{
+    switch(action.type){
+      case 'ADD_FAV':
+          return [...state,action.payload]
+      
+      default:
+          throw new Error
+    }
+  }
+
+
 export const ContextProvider = ({ children }) => {
-  //Aqui deberan implementar la logica propia del Context, utilizando el hook useMemo
-  const [dentists, setDentists] = useState([])
-  const url = 'https://jsonplaceholder.typicode.com/users'
+
+const[themeState,themeDispatch] = useReducer (themeReducer, initialThemeState)
+const[favStates, favDispatch] = useReducer(favReducer, inicalFavState)
+const [dentists, setDentists] = useState([])
+const url = 'https://jsonplaceholder.typicode.com/users'
+
+
+useEffect(()=>{
+    localStorage.setItem('favs',JSON.stringify(favStates))
+},[favStates])
+
 
   useEffect (() => {
       const fetchData = async() => {
@@ -18,7 +62,7 @@ export const ContextProvider = ({ children }) => {
       fetchData()
   },[])
   return (
-    <ContextGlobal.Provider value={{dentists, setDentists}}>
+    <ContextGlobal.Provider value={{dentists, setDentists,themeState,themeDispatch,favStates,favDispatch}}>
       {children}
     </ContextGlobal.Provider>
   );

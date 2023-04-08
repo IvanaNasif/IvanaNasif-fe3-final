@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 const Form = () => {
+  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
   const [user, setUser] = useState({
     user: "",
     email: "",
@@ -15,7 +16,7 @@ const Form = () => {
   };
 
   const handleClick = () => {
-    if (user.user.length < 5 || !user.email) {
+    if (user.user.length < 5 || !user.email || !emailRegex.test(user.email))  {
       alert("Por favor verifique su información nuevamente");
       return;
     } else {
@@ -24,18 +25,20 @@ const Form = () => {
   };
 
   return (
-    <div formContact>
+    <div className= "formContact">
       <form>
         <input
           role="text"
           type="text"
           minLength="6"
+          placeholder="Nombre"
           value={user.user}
           onChange={handletextChange}
         />
         <input
           role="email"
           type="email"
+          placeholder="e-mail"
           value={user.email}
           onChange={handleEmailChange}
         />
